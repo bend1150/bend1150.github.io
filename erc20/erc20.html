@@ -1,25 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>BalanceOf ERC20 Token</title>
+  <title>ERC20 Token</title>
 </head>
 <body>
-  <button id="checkBalanceButton">Check Balance</button>
+	<h1>ERC20 Token Balance</h1>
+  <button id="checkBalanceButton">Get Balance</button>
   <p id="balanceResult"></p>
 
-  <!-- Include the web3 library -->
   <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
   <script>
-    // Initialize web3 and set the provider to the injected MetaMask provider
-    const web3 = new Web3(window.ethereum);
 
-    // Enable use of the MetaMask provider
+    const web3 = new Web3(window.ethereum);
     window.ethereum.enable();
 
-    // Set the address of the ERC20 contract
+    // Contract address
     const contractAddress = "0x409a94c5EB7B35Fabfc9De6dC1ecADB17D5900D2";
 
-    // Set the ABI of the ERC20 contract
+
     const contractABI = [{
       "constant": true,
       "inputs": [
@@ -40,18 +38,16 @@
       "type": "function"
     }];
 
-    // Create a contract object using the ABI and contract address
+
     const contract = new web3.eth.Contract(contractABI, contractAddress);
 
-    // Set the current account to the one specified in the prompt
+    // Account Address
     const currentAccount = "0x7315Ec646543186843E730899d80E31ed86F24e5";
 
-    // Set up a click event listener for the button
+
     document.getElementById("checkBalanceButton").addEventListener("click", () => {
-      // Call the balanceOf() function of the contract with the current account as the parameter
       contract.methods.balanceOf(currentAccount).call()
         .then((balance) => {
-          // Display the balance in the balanceResult element
           document.getElementById("balanceResult").innerHTML = `Balance: ${balance}`;
         })
         .catch((error) => {
