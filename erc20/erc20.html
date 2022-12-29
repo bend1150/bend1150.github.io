@@ -1,101 +1,55 @@
 <!doctype html>
 <html>
   <head>
-    <title>ERC20 Balance</title>
+    <title>ERC20 Balance Checker</title>
   </head>
   <body>
-    <button id="getBalanceButton">Get Balance</button>
-    <div id="balance"></div>
+    <button id="check-balance-button">Check Balance</button>
+    <p id="balance-output"></p>
 
-    <!-- Load web3 library -->
-    <script src="https://cdn.jsdelivr.net/npm/web3@1.3.0/dist/web3.min.js"></script>
+    <!-- Include web3.js library -->
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.2.9/dist/web3.min.js"></script>
     <script>
-      // Get the button element
-      const getBalanceButton = document.getElementById("getBalanceButton");
-      // Get the balance element
-      const balanceElement = document.getElementById("balance");
-
       // Set the contract ABI and address
       const contractABI = [
         {
-          "inputs": [],
-          "name": "name",
-          "outputs": [
-            {
-              "internalType": "string",
-              "name": "",
-              "type": "string"
-            }
-          ],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "inputs": [],
-          "name": "symbol",
-          "outputs": [
-            {
-              "internalType": "string",
-              "name": "",
-              "type": "string"
-            }
-          ],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "inputs": [],
-          "name": "totalSupply",
-          "outputs": [
-            {
-              "internalType": "uint256",
-              "name": "",
-              "type": "uint256"
-            }
-          ],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
+          "constant": true,
           "inputs": [
             {
-              "internalType": "address",
-              "name": "account",
+              "name": "_owner",
               "type": "address"
             }
           ],
           "name": "balanceOf",
           "outputs": [
             {
-              "internalType": "uint256",
-              "name": "",
+              "name": "balance",
               "type": "uint256"
             }
           ],
+          "payable": false,
           "stateMutability": "view",
           "type": "function"
         }
+        // Other contract functions...
       ];
       const contractAddress = "0x409a94c5EB7B35Fabfc9De6dC1ecADB17D5900D2";
 
-      // Initialize the contract instance
-      let contractInstance;
-      window.addEventListener('load', async () => {
-        // Check if web3 is injected by MetaMask
-        if (window.ethereum) {
-          window.web3 = new Web3(window.ethereum);
-          try {
-            // Request account access if needed
-            await window.ethereum.enable();
-            // Initialize the contract instance
-            contractInstance = new window.web3.eth.Contract(contractABI, contractAddress);
-          } catch (error) {
-            console.error(error);
-          }
-        } else {
-          console.error("MetaMask is not detected");
-        }
-      });
+      // Initialize the contract object
+      const contract = new web3.eth.Contract(contractABI, contractAddress);
 
-      // Add an event listener to the button
-     
+      // Set the button click event listener
+      document.getElementById("check-balance-button").addEventListener("click", async () => {
+        // Get the current account from MetaMask
+        const accounts = await web3.eth.getAccounts();
+        const account = accounts[0];
+
+        // Call the contract's balanceOf() function
+        const balance = await contract.methods.balanceOf(account).call();
+
+        // Display the balance
+        document.getElementById("balance-output").innerText = `Your balance is: ${balance}`;
+      });
+    </script>
+  </body>
+</html>
